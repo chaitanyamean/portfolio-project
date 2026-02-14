@@ -55,7 +55,7 @@ export default {
         {
           method: "POST",
           headers: {
-            Authorization: `token ${env.GITHUB_PAT}`,
+            Authorization: `token ${env.GH_PAT}`,
             Accept: "application/vnd.github.v3+json",
             "User-Agent": "telegram-devops-bot",
             "Content-Type": "application/json",
