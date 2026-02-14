@@ -48,7 +48,6 @@ const PROJECTS = [
 ];
 
 const SKILLS = [
-  { category: "Backend", items: ["Java", "Spring Boot", "PostgreSQL", "REST APIs", "Microservices"] },
   { category: "AI/ML", items: ["LangChain", "Spring AI", "GPT-4", "pgvector", "Multi-Agent Systems"] },
   { category: "Infrastructure", items: ["RabbitMQ", "Redis", "Docker", "GitHub Actions", "AWS"] },
   { category: "Frontend", items: ["React", "JavaScript", "Tailwind CSS", "HTML/CSS"] },
