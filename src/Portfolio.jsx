@@ -51,7 +51,6 @@ const SKILLS = [
   { category: "Backend", items: ["Java", "Spring Boot", "PostgreSQL", "REST APIs", "Microservices"] },
   { category: "AI/ML", items: ["LangChain", "Spring AI", "GPT-4", "pgvector", "Multi-Agent Systems"] },
   { category: "Infrastructure", items: ["RabbitMQ", "Redis", "Docker", "GitHub Actions", "AWS"] },
-  { category: "Docker", items: ["Docker Compose", "Dockerfile", "Container Orchestration", "Multi-stage Builds", "Docker Swarm"] },
   { category: "Frontend", items: ["React", "JavaScript", "Tailwind CSS", "HTML/CSS"] },
   { category: "Architecture", items: ["System Design", "Event-Driven", "Circuit Breakers", "Caching"] },
 ];
