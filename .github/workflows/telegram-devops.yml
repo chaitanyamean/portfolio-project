@@ -62,9 +62,12 @@ jobs:
 
       # ── Commit & push changes ──
       - name: Commit and push changes
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
           git config user.name "telegram-devops-bot"
           git config user.email "bot@devops.local"
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/chaitanyamean/portfolio-project.git
           git add -A
           if git diff --cached --quiet; then
             echo "No changes to commit"
