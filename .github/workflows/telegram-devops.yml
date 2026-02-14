@@ -46,8 +46,7 @@ jobs:
         with:
           prompt: ${{ github.event.client_payload.message }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          allowed_tools: "Edit,Write,Bash"
-
+          claude_args: '--allowedTools "Edit,Write,Bash(npm run lint),Bash(npm run build)"'
 
       # ── Lint (non-blocking) ──
       - name: Lint
