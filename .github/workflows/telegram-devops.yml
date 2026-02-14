@@ -4,6 +4,10 @@ on:
   repository_dispatch:
     types: [telegram-devops]
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   devops:
     runs-on: ubuntu-latest
