@@ -1,0 +1,93 @@
+name: Telegram DevOps Bot
+
+on:
+  repository_dispatch:
+    types: [telegram-devops]
+
+jobs:
+  devops:
+    runs-on: ubuntu-latest
+    env:
+      CHAT_ID: ${{ github.event.client_payload.chat_id }}
+      USER_MESSAGE: ${{ github.event.client_payload.message }}
+
+    steps:
+      # ── Notify: pipeline started ──
+      - name: Notify Telegram — started
+        run: |
+          curl -s -X POST \
+            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"$CHAT_ID\", \"text\": \"🚀 Pipeline started for:\\n\\n\`${USER_MESSAGE:0:200}\`\", \"parse_mode\": \"Markdown\"}"
+
+      # ── Checkout ──
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      # ── Setup Node ──
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ── Install deps ──
+      - name: Install dependencies
+        run: npm ci --ignore-scripts || npm install
+
+      # ── Claude Code ──
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          prompt: ${{ github.event.client_payload.message }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      # ── Lint (non-blocking) ──
+      - name: Lint
+        id: lint
+        continue-on-error: true
+        run: npm run lint --if-present 2>&1 | tail -50
+
+      # ── Build (non-blocking) ──
+      - name: Build
+        id: build
+        continue-on-error: true
+        run: npm run build --if-present 2>&1 | tail -50
+
+      # ── Commit & push changes ──
+      - name: Commit and push changes
+        run: |
+          git config user.name "telegram-devops-bot"
+          git config user.email "bot@devops.local"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "bot: ${{ github.event.client_payload.message }}" \
+              -m "Triggered via Telegram DevOps Bot" \
+              -m "Co-Authored-By: Claude <noreply@anthropic.com>"
+            git push
+          fi
+
+      # ── Notify: result ──
+      - name: Notify Telegram — result
+        if: always()
+        run: |
+          LINT_RESULT="${{ steps.lint.outcome }}"
+          BUILD_RESULT="${{ steps.build.outcome }}"
+
+          if [ "$LINT_RESULT" = "success" ] && [ "$BUILD_RESULT" = "success" ]; then
+            STATUS="✅ Pipeline succeeded"
+          elif [ "$LINT_RESULT" = "skipped" ] && [ "$BUILD_RESULT" = "skipped" ]; then
+            STATUS="✅ Pipeline completed (no lint/build scripts)"
+          else
+            STATUS="⚠️ Pipeline finished with issues"
+          fi
+
+          TEXT="${STATUS}\n\nLint: ${LINT_RESULT}\nBuild: ${BUILD_RESULT}\n\nMessage: \`${USER_MESSAGE:0:200}\`"
+
+          curl -s -X POST \
+            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"$CHAT_ID\", \"text\": \"${TEXT}\", \"parse_mode\": \"Markdown\"}"
