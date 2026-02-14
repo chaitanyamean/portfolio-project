@@ -1,0 +1,6 @@
+name = "telegram-devops-bot"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+GITHUB_REPO = "https://github.com/chaitanyamean/portfolio-project"  # ← Replace with your GitHub username/repo
