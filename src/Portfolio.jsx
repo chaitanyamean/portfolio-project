@@ -49,6 +49,7 @@ const PROJECTS = [
 
 const SKILLS = [
   { category: "AI/ML", items: ["LangChain", "Spring AI", "GPT-4", "pgvector", "Multi-Agent Systems"] },
+  { category: "Backend", items: ["Spring Boot", "FastAPI", "PostgreSQL", "REST APIs", "Microservices"] },
   { category: "Infrastructure", items: ["RabbitMQ", "Redis", "Docker", "GitHub Actions", "AWS"] },
   { category: "Frontend", items: ["React", "JavaScript", "Tailwind CSS", "HTML/CSS"] },
   { category: "Architecture", items: ["System Design", "Event-Driven", "Circuit Breakers", "Caching"] },
