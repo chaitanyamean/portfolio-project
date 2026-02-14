@@ -46,6 +46,8 @@ jobs:
         with:
           prompt: ${{ github.event.client_payload.message }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          allowed_tools: "Edit,Write,Bash"
+
 
       # ── Lint (non-blocking) ──
       - name: Lint
