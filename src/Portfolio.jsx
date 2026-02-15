@@ -1,5 +1,36 @@
 import { useState, useEffect, useRef } from "react";
 
+const THEME_COLORS = {
+  dark: {
+    bg: "#08080C",
+    bgOverlay: "rgba(8,8,12,0.92)",
+    text: "#fff",
+    textSecondary: "rgba(255,255,255,0.45)",
+    textTertiary: "rgba(255,255,255,0.35)",
+    textMuted: "rgba(255,255,255,0.2)",
+    cardBg: "rgba(255,255,255,0.015)",
+    cardBgHover: "rgba(255,255,255,0.03)",
+    border: "rgba(255,255,255,0.05)",
+    borderHover: "rgba(255,255,255,0.08)",
+    inputBg: "rgba(255,255,255,0.03)",
+    accent: "#00E5A0",
+  },
+  light: {
+    bg: "#FFFFFF",
+    bgOverlay: "rgba(255,255,255,0.92)",
+    text: "#08080C",
+    textSecondary: "rgba(8,8,12,0.65)",
+    textTertiary: "rgba(8,8,12,0.55)",
+    textMuted: "rgba(8,8,12,0.35)",
+    cardBg: "rgba(8,8,12,0.02)",
+    cardBgHover: "rgba(8,8,12,0.04)",
+    border: "rgba(8,8,12,0.08)",
+    borderHover: "rgba(8,8,12,0.12)",
+    inputBg: "rgba(8,8,12,0.03)",
+    accent: "#00E5A0",
+  },
+};
+
 const PROJECTS = [
   {
     id: "archadvisor",
@@ -80,7 +111,7 @@ function useMouseGlow() {
   return pos;
 }
 
-function Navbar({ activeSection }) {
+function Navbar({ activeSection, theme, toggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50);
@@ -88,39 +119,63 @@ function Navbar({ activeSection }) {
     return () => window.removeEventListener("scroll", handler);
   }, []);
   const links = ["Home", "Projects", "Skills", "Contact"];
+  const colors = THEME_COLORS[theme];
+  const inactiveColor = theme === "dark" ? "rgba(255,255,255,0.5)" : "rgba(8,8,12,0.5)";
+
   return (
     <nav style={{
       position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
       padding: scrolled ? "12px 40px" : "20px 40px",
-      background: scrolled ? "rgba(8,8,12,0.92)" : "transparent",
+      background: scrolled ? colors.bgOverlay : "transparent",
       backdropFilter: scrolled ? "blur(20px)" : "none",
-      borderBottom: scrolled ? "1px solid rgba(255,255,255,0.05)" : "none",
+      borderBottom: scrolled ? `1px solid ${colors.border}` : "none",
       display: "flex", justifyContent: "space-between", alignItems: "center",
       transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
     }}>
-      <div style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "22px", color: "#fff", letterSpacing: "-0.5px" }}>
-        K<span style={{ color: "#00E5A0" }}>.</span>
+      <div style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "22px", color: colors.text, letterSpacing: "-0.5px" }}>
+        K<span style={{ color: colors.accent }}>.</span>
       </div>
-      <div style={{ display: "flex", gap: "32px" }}>
+      <div style={{ display: "flex", gap: "32px", alignItems: "center" }}>
         {links.map((l) => (
           <a key={l} href={`#${l.toLowerCase()}`} style={{
-            color: activeSection === l.toLowerCase() ? "#00E5A0" : "rgba(255,255,255,0.5)",
+            color: activeSection === l.toLowerCase() ? colors.accent : inactiveColor,
             textDecoration: "none", fontSize: "13px", letterSpacing: "1.5px",
             textTransform: "uppercase", fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
             transition: "color 0.3s",
           }}
-          onMouseEnter={(e) => e.target.style.color = "#00E5A0"}
-          onMouseLeave={(e) => e.target.style.color = activeSection === l.toLowerCase() ? "#00E5A0" : "rgba(255,255,255,0.5)"}
+          onMouseEnter={(e) => e.target.style.color = colors.accent}
+          onMouseLeave={(e) => e.target.style.color = activeSection === l.toLowerCase() ? colors.accent : inactiveColor}
           >{l}</a>
         ))}
+        <button
+          onClick={toggleTheme}
+          style={{
+            background: "transparent",
+            border: `1px solid ${colors.border}`,
+            borderRadius: "8px",
+            padding: "8px 12px",
+            cursor: "pointer",
+            fontSize: "16px",
+            transition: "all 0.3s",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          onMouseEnter={(e) => e.target.style.borderColor = colors.accent}
+          onMouseLeave={(e) => e.target.style.borderColor = colors.border}
+          aria-label="Toggle theme"
+        >
+          {theme === "dark" ? "☀️" : "🌙"}
+        </button>
       </div>
     </nav>
   );
 }
 
-function HeroSection() {
+function HeroSection({ theme }) {
   const [ref, visible] = useInView();
   const mouse = useMouseGlow();
+  const colors = THEME_COLORS[theme];
   return (
     <section id="home" ref={ref} style={{
       minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
@@ -149,14 +204,14 @@ function HeroSection() {
         <div style={{
           display: "inline-block", padding: "6px 16px", borderRadius: "100px",
           background: "rgba(0,229,160,0.08)", border: "1px solid rgba(0,229,160,0.15)",
-          color: "#00E5A0", fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
+          color: colors.accent, fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase",
           fontFamily: "'DM Sans', sans-serif", fontWeight: 600, marginBottom: "28px",
         }}>
           Principal Engineer · {EXPERIENCE_YEARS}+ Years
         </div>
         <h1 style={{
           fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "clamp(48px, 7vw, 88px)",
-          fontWeight: 400, color: "#fff", lineHeight: 1.05, margin: "0 0 24px",
+          fontWeight: 400, color: colors.text, lineHeight: 1.05, margin: "0 0 24px",
           letterSpacing: "-2px",
         }}>
           Building systems that
@@ -167,7 +222,7 @@ function HeroSection() {
           }}>think, decide & ship</span>
         </h1>
         <p style={{
-          fontFamily: "'DM Sans', sans-serif", fontSize: "18px", color: "rgba(255,255,255,0.45)",
+          fontFamily: "'DM Sans', sans-serif", fontSize: "18px", color: colors.textSecondary,
           lineHeight: 1.7, maxWidth: "600px", margin: "0 auto 40px", fontWeight: 400,
         }}>
           I architect AI-powered platforms, event-driven systems, and developer tools
@@ -175,7 +230,7 @@ function HeroSection() {
         </p>
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
           <a href="#projects" style={{
-            padding: "14px 32px", background: "#00E5A0", color: "#08080C",
+            padding: "14px 32px", background: colors.accent, color: theme === "dark" ? "#08080C" : "#fff",
             borderRadius: "8px", textDecoration: "none", fontSize: "14px",
             fontFamily: "'DM Sans', sans-serif", fontWeight: 600, letterSpacing: "0.5px",
             transition: "transform 0.2s, box-shadow 0.2s",
@@ -184,18 +239,18 @@ function HeroSection() {
           onMouseLeave={(e) => { e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = "none"; }}
           >View Projects</a>
           <a href="#contact" style={{
-            padding: "14px 32px", background: "transparent", color: "#fff",
+            padding: "14px 32px", background: "transparent", color: colors.text,
             borderRadius: "8px", textDecoration: "none", fontSize: "14px",
             fontFamily: "'DM Sans', sans-serif", fontWeight: 600, letterSpacing: "0.5px",
-            border: "1px solid rgba(255,255,255,0.15)", transition: "all 0.2s",
+            border: `1px solid ${colors.border}`, transition: "all 0.2s",
           }}
-          onMouseEnter={(e) => { e.target.style.borderColor = "rgba(0,229,160,0.5)"; e.target.style.color = "#00E5A0"; }}
-          onMouseLeave={(e) => { e.target.style.borderColor = "rgba(255,255,255,0.15)"; e.target.style.color = "#fff"; }}
+          onMouseEnter={(e) => { e.target.style.borderColor = "rgba(0,229,160,0.5)"; e.target.style.color = colors.accent; }}
+          onMouseLeave={(e) => { e.target.style.borderColor = colors.border; e.target.style.color = colors.text; }}
           >Let's connect</a>
         </div>
         <div style={{
           display: "flex", gap: "48px", justifyContent: "center", marginTop: "64px",
-          borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "40px",
+          borderTop: `1px solid ${colors.border}`, paddingTop: "40px",
         }}>
           {[
             { num: `${EXPERIENCE_YEARS}+`, label: "Years Experience" },
@@ -205,11 +260,11 @@ function HeroSection() {
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{
                 fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "32px",
-                color: "#fff", letterSpacing: "-1px",
+                color: colors.text, letterSpacing: "-1px",
               }}>{s.num}</div>
               <div style={{
                 fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
-                color: "rgba(255,255,255,0.35)", letterSpacing: "1px", textTransform: "uppercase", marginTop: "4px",
+                color: colors.textTertiary, letterSpacing: "1px", textTransform: "uppercase", marginTop: "4px",
               }}>{s.label}</div>
             </div>
           ))}
@@ -219,15 +274,16 @@ function HeroSection() {
   );
 }
 
-function ProjectCard({ project, index }) {
+function ProjectCard({ project, index, theme }) {
   const [ref, visible] = useInView(0.1);
   const [hovered, setHovered] = useState(false);
+  const colors = THEME_COLORS[theme];
   return (
     <div ref={ref}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.015)",
-        border: `1px solid ${hovered ? `${project.color}22` : "rgba(255,255,255,0.05)"}`,
+        background: hovered ? colors.cardBgHover : colors.cardBg,
+        border: `1px solid ${hovered ? `${project.color}22` : colors.border}`,
         borderRadius: "16px", padding: "36px", position: "relative", overflow: "hidden",
         cursor: "default",
         opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)",
@@ -243,7 +299,7 @@ function ProjectCard({ project, index }) {
         <div>
           <h3 style={{
             fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "24px",
-            color: "#fff", margin: 0, letterSpacing: "-0.5px",
+            color: colors.text, margin: 0, letterSpacing: "-0.5px",
           }}>{project.title}</h3>
           <div style={{
             fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
@@ -254,26 +310,27 @@ function ProjectCard({ project, index }) {
       </div>
       <p style={{
         fontFamily: "'DM Sans', sans-serif", fontSize: "14.5px",
-        color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: "0 0 20px",
+        color: colors.textSecondary, lineHeight: 1.7, margin: "0 0 20px",
       }}>{project.description}</p>
       <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "20px" }}>
         {project.tags.map((t) => (
           <span key={t} style={{
             padding: "4px 10px", borderRadius: "6px", fontSize: "11px",
-            background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)",
+            background: theme === "dark" ? "rgba(255,255,255,0.04)" : "rgba(8,8,12,0.04)",
+            color: theme === "dark" ? "rgba(255,255,255,0.5)" : "rgba(8,8,12,0.5)",
             fontFamily: "'DM Mono', monospace", letterSpacing: "0.3px",
-            border: "1px solid rgba(255,255,255,0.06)",
+            border: `1px solid ${colors.border}`,
           }}>{t}</span>
         ))}
       </div>
       <div style={{
         display: "flex", gap: "16px", paddingTop: "16px",
-        borderTop: "1px solid rgba(255,255,255,0.04)",
+        borderTop: `1px solid ${colors.border}`,
       }}>
         {project.metrics.map((m, i) => (
           <span key={i} style={{
             fontFamily: "'DM Sans', sans-serif", fontSize: "12px",
-            color: "rgba(255,255,255,0.3)", display: "flex", alignItems: "center", gap: "6px",
+            color: colors.textMuted, display: "flex", alignItems: "center", gap: "6px",
           }}>
             <span style={{ width: "4px", height: "4px", borderRadius: "50%", background: project.color, opacity: 0.6 }} />
             {m}
@@ -284,8 +341,9 @@ function ProjectCard({ project, index }) {
   );
 }
 
-function ProjectsSection() {
+function ProjectsSection({ theme }) {
   const [ref, visible] = useInView();
+  const colors = THEME_COLORS[theme];
   return (
     <section id="projects" ref={ref} style={{ padding: "120px 40px", maxWidth: "1100px", margin: "0 auto" }}>
       <div style={{
@@ -294,15 +352,15 @@ function ProjectsSection() {
       }}>
         <div style={{
           fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase",
-          color: "#00E5A0", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, marginBottom: "12px",
+          color: colors.accent, fontFamily: "'DM Sans', sans-serif", fontWeight: 600, marginBottom: "12px",
         }}>Portfolio</div>
         <h2 style={{
           fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "clamp(36px, 5vw, 52px)",
-          color: "#fff", margin: "0 0 16px", letterSpacing: "-1.5px", fontWeight: 400,
+          color: colors.text, margin: "0 0 16px", letterSpacing: "-1.5px", fontWeight: 400,
         }}>Featured Projects</h2>
         <p style={{
           fontFamily: "'DM Sans', sans-serif", fontSize: "16px",
-          color: "rgba(255,255,255,0.35)", maxWidth: "500px", lineHeight: 1.6, marginBottom: "48px",
+          color: colors.textTertiary, maxWidth: "500px", lineHeight: 1.6, marginBottom: "48px",
         }}>
           Systems I've designed and built — from multi-agent AI platforms to serverless DevOps pipelines.
         </p>
@@ -310,14 +368,15 @@ function ProjectsSection() {
       <div style={{
         display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "20px",
       }}>
-        {PROJECTS.map((p, i) => <ProjectCard key={p.id} project={p} index={i} />)}
+        {PROJECTS.map((p, i) => <ProjectCard key={p.id} project={p} index={i} theme={theme} />)}
       </div>
     </section>
   );
 }
 
-function SkillsSection() {
+function SkillsSection({ theme }) {
   const [ref, visible] = useInView();
+  const themeColors = THEME_COLORS[theme];
   return (
     <section id="skills" ref={ref} style={{ padding: "100px 40px", maxWidth: "1100px", margin: "0 auto" }}>
       <div style={{
@@ -330,13 +389,15 @@ function SkillsSection() {
         }}>Expertise</div>
         <h2 style={{
           fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "clamp(36px, 5vw, 52px)",
-          color: "#fff", margin: "0 0 48px", letterSpacing: "-1.5px", fontWeight: 400,
+          color: themeColors.text, margin: "0 0 48px", letterSpacing: "-1.5px", fontWeight: 400,
         }}>Technical Stack</h2>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "24px" }}>
         {SKILLS.map((s, ci) => {
           const colors = ["#00E5A0", "#FF6B35", "#7B61FF", "#00B4D8", "#FF3366"];
           const color = colors[ci % colors.length];
+          const itemColor = theme === "dark" ? "rgba(255,255,255,0.55)" : "rgba(8,8,12,0.55)";
+          const itemHoverColor = themeColors.text;
           return (
             <div key={s.category} style={{
               opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -354,13 +415,13 @@ function SkillsSection() {
                 {s.items.map((item) => (
                   <div key={item} style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: "14px",
-                    color: "rgba(255,255,255,0.55)", padding: "8px 0",
-                    borderBottom: "1px solid rgba(255,255,255,0.03)",
+                    color: itemColor, padding: "8px 0",
+                    borderBottom: `1px solid ${themeColors.border}`,
                     transition: "color 0.2s, padding-left 0.2s",
                     cursor: "default",
                   }}
-                  onMouseEnter={(e) => { e.target.style.color = "#fff"; e.target.style.paddingLeft = "8px"; }}
-                  onMouseLeave={(e) => { e.target.style.color = "rgba(255,255,255,0.55)"; e.target.style.paddingLeft = "0"; }}
+                  onMouseEnter={(e) => { e.target.style.color = itemHoverColor; e.target.style.paddingLeft = "8px"; }}
+                  onMouseLeave={(e) => { e.target.style.color = itemColor; e.target.style.paddingLeft = "0"; }}
                   >{item}</div>
                 ))}
               </div>
@@ -372,11 +433,12 @@ function SkillsSection() {
   );
 }
 
-function ContactSection() {
+function ContactSection({ theme }) {
   const [ref, visible] = useInView();
   const [hovered, setHovered] = useState(false);
   const [sent, setSent] = useState(false);
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", mobile: "", message: "" });
+  const colors = THEME_COLORS[theme];
 
   const handleSubmit = () => {
     if (form.firstName && form.lastName && form.email && form.message) {
@@ -386,8 +448,8 @@ function ContactSection() {
   };
 
   const inputStyle = {
-    width: "100%", padding: "14px 16px", background: "rgba(255,255,255,0.03)",
-    border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "#fff",
+    width: "100%", padding: "14px 16px", background: colors.inputBg,
+    border: `1px solid ${colors.borderHover}`, borderRadius: "8px", color: colors.text,
     fontFamily: "'DM Sans', sans-serif", fontSize: "14px", outline: "none",
     transition: "border-color 0.3s", boxSizing: "border-box",
   };
@@ -407,11 +469,11 @@ function ContactSection() {
         }}>Get in Touch</div>
         <h2 style={{
           fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "clamp(36px, 5vw, 52px)",
-          color: "#fff", margin: "0 0 16px", letterSpacing: "-1.5px", fontWeight: 400,
+          color: colors.text, margin: "0 0 16px", letterSpacing: "-1.5px", fontWeight: 400,
         }}>Let's Build Together</h2>
         <p style={{
           fontFamily: "'DM Sans', sans-serif", fontSize: "16px",
-          color: "rgba(255,255,255,0.35)", lineHeight: 1.6, marginBottom: "48px",
+          color: colors.textTertiary, lineHeight: 1.6, marginBottom: "48px",
         }}>
           Open to Staff/Principal Engineering roles and exciting technical challenges.
         </p>
@@ -447,9 +509,9 @@ function ContactSection() {
           onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
           style={{
             padding: "16px 32px",
-            background: sent ? "#00E5A0" : hovered ? "#000" : "#000",
-            color: sent ? "#000" : "#fff",
-            border: `1px solid ${sent ? "#00E5A0" : hovered ? "#00E5A0" : "rgba(255,255,255,0.15)"}`,
+            background: sent ? colors.accent : hovered ? colors.bg : colors.bg,
+            color: sent ? (theme === "dark" ? "#000" : "#fff") : colors.text,
+            border: `1px solid ${sent ? colors.accent : hovered ? colors.accent : colors.border}`,
             borderRadius: "8px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif",
             fontWeight: 600, letterSpacing: "0.5px", cursor: "pointer",
             transition: "all 0.3s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -463,15 +525,16 @@ function ContactSection() {
   );
 }
 
-function Footer() {
+function Footer({ theme }) {
+  const colors = THEME_COLORS[theme];
   return (
     <footer style={{
       padding: "40px", textAlign: "center",
-      borderTop: "1px solid rgba(255,255,255,0.04)",
+      borderTop: `1px solid ${colors.border}`,
     }}>
       <div style={{
         fontFamily: "'DM Sans', sans-serif", fontSize: "13px",
-        color: "rgba(255,255,255,0.2)",
+        color: colors.textMuted,
       }}>
         Built with passion · Krishna © 2026
       </div>
@@ -481,6 +544,19 @@ function Footer() {
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("home");
+  const [theme, setTheme] = useState(() => {
+    const saved = localStorage.getItem("portfolio-theme");
+    return saved || "dark";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("portfolio-theme", theme);
+    document.body.style.background = THEME_COLORS[theme].bg;
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   useEffect(() => {
     const sections = ["home", "projects", "skills", "contact"];
@@ -499,32 +575,34 @@ export default function Portfolio() {
     return () => observer.disconnect();
   }, []);
 
+  const colors = THEME_COLORS[theme];
+
   return (
     <div style={{
-      minHeight: "100vh", background: "#08080C", color: "#fff", position: "relative",
-      overflowX: "hidden",
+      minHeight: "100vh", background: colors.bg, color: colors.text, position: "relative",
+      overflowX: "hidden", transition: "background 0.3s, color 0.3s",
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
       <style>{`
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { background: #08080C; }
-        ::selection { background: rgba(0,229,160,0.2); color: #fff; }
+        body { background: ${colors.bg}; transition: background 0.3s; }
+        ::selection { background: rgba(0,229,160,0.2); color: ${colors.text}; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #08080C; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        ::-webkit-scrollbar-track { background: ${colors.bg}; }
+        ::-webkit-scrollbar-thumb { background: ${colors.border}; border-radius: 3px; }
         @media (max-width: 768px) {
           section { padding-left: 20px !important; padding-right: 20px !important; }
           nav { padding-left: 20px !important; padding-right: 20px !important; }
         }
       `}</style>
-      <Navbar activeSection={activeSection} />
-      <HeroSection />
-      <ProjectsSection />
-      <SkillsSection />
-      <ContactSection />
-      <Footer />
+      <Navbar activeSection={activeSection} theme={theme} toggleTheme={toggleTheme} />
+      <HeroSection theme={theme} />
+      <ProjectsSection theme={theme} />
+      <SkillsSection theme={theme} />
+      <ContactSection theme={theme} />
+      <Footer theme={theme} />
     </div>
   );
 }
