@@ -376,12 +376,12 @@ function ContactSection() {
   const [ref, visible] = useInView();
   const [hovered, setHovered] = useState(false);
   const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", mobile: "", message: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", mobile: "", message: "" });
 
   const handleSubmit = () => {
-    if (form.name && form.email && form.message) {
+    if (form.firstName && form.lastName && form.email && form.message) {
       setSent(true);
-      setTimeout(() => { setSent(false); setForm({ name: "", email: "", mobile: "", message: "" }); }, 3000);
+      setTimeout(() => { setSent(false); setForm({ firstName: "", lastName: "", email: "", mobile: "", message: "" }); }, 3000);
     }
   };
 
@@ -421,8 +421,12 @@ function ContactSection() {
         opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
         transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
       }}>
-        <input style={inputStyle} placeholder="Your Name" value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
+        <input style={inputStyle} placeholder="First Name" value={form.firstName}
+          onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+          onFocus={(e) => e.target.style.borderColor = "rgba(0,229,160,0.4)"}
+          onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+        <input style={inputStyle} placeholder="Last Name" value={form.lastName}
+          onChange={(e) => setForm({ ...form, lastName: e.target.value })}
           onFocus={(e) => e.target.style.borderColor = "rgba(0,229,160,0.4)"}
           onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
         <input style={inputStyle} placeholder="Your Email" value={form.email}
