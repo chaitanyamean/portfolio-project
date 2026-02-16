@@ -118,7 +118,7 @@ function Navbar({ activeSection, theme, toggleTheme }) {
     window.addEventListener("scroll", handler);
     return () => window.removeEventListener("scroll", handler);
   }, []);
-  const links = ["Home", "Projects", "Skills", "Contact"];
+  const links = ["Home", "Projects", "Blog", "Skills", "Contact"];
   const colors = THEME_COLORS[theme];
   const inactiveColor = theme === "dark" ? "rgba(255,255,255,0.5)" : "rgba(8,8,12,0.5)";
 
@@ -374,6 +374,69 @@ function ProjectsSection({ theme }) {
   );
 }
 
+function BlogSection({ theme }) {
+  const [ref, visible] = useInView();
+  const colors = THEME_COLORS[theme];
+  return (
+    <section id="blog" ref={ref} style={{ padding: "120px 40px", maxWidth: "1100px", margin: "0 auto" }}>
+      <div style={{
+        opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+      }}>
+        <div style={{
+          fontSize: "12px", letterSpacing: "3px", textTransform: "uppercase",
+          color: "#00B4D8", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, marginBottom: "12px",
+        }}>Insights</div>
+        <h2 style={{
+          fontFamily: "'Instrument Serif', Georgia, serif", fontSize: "clamp(36px, 5vw, 52px)",
+          color: colors.text, margin: "0 0 16px", letterSpacing: "-1.5px", fontWeight: 400,
+        }}>Blog</h2>
+        <p style={{
+          fontFamily: "'DM Sans', sans-serif", fontSize: "16px",
+          color: colors.textTertiary, maxWidth: "500px", lineHeight: 1.6, marginBottom: "48px",
+        }}>
+          Thoughts on engineering, architecture, and building scalable systems.
+        </p>
+      </div>
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        minHeight: "300px",
+        background: colors.cardBg,
+        border: `1px solid ${colors.border}`,
+        borderRadius: "16px",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : "translateY(20px)",
+        transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s",
+      }}>
+        <div style={{ textAlign: "center", padding: "40px" }}>
+          <div style={{
+            fontSize: "48px",
+            marginBottom: "16px",
+            opacity: 0.3,
+          }}>📝</div>
+          <h3 style={{
+            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontSize: "24px",
+            color: colors.text,
+            marginBottom: "12px",
+            letterSpacing: "-0.5px",
+          }}>Coming Soon</h3>
+          <p style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: "14px",
+            color: colors.textSecondary,
+            lineHeight: 1.6,
+          }}>
+            Blog posts and technical articles are on the way.
+            <br />
+            Stay tuned for deep dives into system design and architecture.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SkillsSection({ theme }) {
   const [ref, visible] = useInView();
   const themeColors = THEME_COLORS[theme];
@@ -563,7 +626,7 @@ export default function Portfolio() {
   };
 
   useEffect(() => {
-    const sections = ["home", "projects", "skills", "contact"];
+    const sections = ["home", "projects", "blog", "skills", "contact"];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -604,6 +667,7 @@ export default function Portfolio() {
       <Navbar activeSection={activeSection} theme={theme} toggleTheme={toggleTheme} />
       <HeroSection theme={theme} />
       <ProjectsSection theme={theme} />
+      <BlogSection theme={theme} />
       <SkillsSection theme={theme} />
       <ContactSection theme={theme} />
       <Footer theme={theme} />
