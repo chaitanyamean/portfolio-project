@@ -437,13 +437,13 @@ function ContactSection({ theme }) {
   const [ref, visible] = useInView();
   const [hovered, setHovered] = useState(false);
   const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", mobile: "", message: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", mobile: "", age: "", message: "" });
   const colors = THEME_COLORS[theme];
 
   const handleSubmit = () => {
     if (form.firstName && form.lastName && form.email && form.message) {
       setSent(true);
-      setTimeout(() => { setSent(false); setForm({ firstName: "", lastName: "", email: "", mobile: "", message: "" }); }, 3000);
+      setTimeout(() => { setSent(false); setForm({ firstName: "", lastName: "", email: "", mobile: "", age: "", message: "" }); }, 3000);
     }
   };
 
@@ -497,6 +497,10 @@ function ContactSection({ theme }) {
           onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
         <input style={inputStyle} placeholder="Mobile Number" value={form.mobile}
           onChange={(e) => setForm({ ...form, mobile: e.target.value })}
+          onFocus={(e) => e.target.style.borderColor = "rgba(0,229,160,0.4)"}
+          onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+        <input style={inputStyle} placeholder="Age" value={form.age}
+          onChange={(e) => setForm({ ...form, age: e.target.value })}
           onFocus={(e) => e.target.style.borderColor = "rgba(0,229,160,0.4)"}
           onBlur={(e) => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
         <textarea style={{ ...inputStyle, minHeight: "140px", resize: "vertical" }}
