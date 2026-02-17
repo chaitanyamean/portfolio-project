@@ -87,6 +87,17 @@ const PROJECTS = [
     metrics: ["Real-time analytics", "High throughput", "Enterprise-scale"],
     icon: "◆",
   },
+  {
+    id: "nenon",
+    title: "Nenon",
+    subtitle: "Modern Web Application Platform",
+    description:
+      "Scalable web application platform featuring a dynamic React frontend, robust Java backend services, and PostgreSQL database. Delivers seamless user experiences with efficient data management, RESTful APIs, and responsive design patterns for modern web applications.",
+    tags: ["React", "Java", "PostgreSQL", "REST APIs", "Web Platform"],
+    color: "#FF3366",
+    metrics: ["Scalable architecture", "RESTful design", "Responsive UI"],
+    icon: "◇",
+  },
 ];
 
 const SKILLS = [
