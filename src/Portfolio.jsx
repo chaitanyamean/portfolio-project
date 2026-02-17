@@ -86,7 +86,7 @@ const SKILLS = [
   { category: "Architecture", items: ["System Design", "Event-Driven", "Circuit Breakers", "Caching"] },
 ];
 
-const EXPERIENCE_YEARS = 10;
+const EXPERIENCE_YEARS = 15;
 
 function useInView(threshold = 0.15) {
   const ref = useRef(null);
@@ -266,8 +266,8 @@ function HeroSection({ theme, setShowTableView }) {
         }}>
           {[
             { num: `${EXPERIENCE_YEARS}+`, label: "Years Experience" },
-            { num: "6+", label: "AI Projects Shipped" },
-            { num: "<100ms", label: "Response Targets" },
+            { num: "5+", label: "AI Projects Shipped" },
+            { num: "<10ms", label: "Response Targets" },
           ].map((s, i) => (
             <div key={i} style={{ textAlign: "center" }}>
               <div style={{
