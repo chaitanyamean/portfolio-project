@@ -76,6 +76,17 @@ const PROJECTS = [
     metrics: ["Zero servers", "$0 cost", "~90s to deploy"],
     icon: "◐",
   },
+  {
+    id: "axon",
+    title: "Axon",
+    subtitle: "Enterprise Data Processing Platform",
+    description:
+      "High-throughput data processing system built with React frontend, Java Spring Boot microservices, and PostgreSQL. Handles real-time analytics, batch processing, and complex query optimization for enterprise-scale applications.",
+    tags: ["React", "Java", "PostgreSQL", "Spring Boot", "Microservices"],
+    color: "#9D4EDD",
+    metrics: ["Real-time analytics", "High throughput", "Enterprise-scale"],
+    icon: "◆",
+  },
 ];
 
 const SKILLS = [
