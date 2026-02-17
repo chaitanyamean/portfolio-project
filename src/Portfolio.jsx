@@ -172,7 +172,7 @@ function Navbar({ activeSection, theme, toggleTheme }) {
   );
 }
 
-function HeroSection({ theme }) {
+function HeroSection({ theme, setShowTableView }) {
   const [ref, visible] = useInView();
   const mouse = useMouseGlow();
   const colors = THEME_COLORS[theme];
@@ -238,6 +238,18 @@ function HeroSection({ theme }) {
           onMouseEnter={(e) => { e.target.style.transform = "translateY(-2px)"; e.target.style.boxShadow = "0 8px 30px rgba(0,229,160,0.3)"; }}
           onMouseLeave={(e) => { e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = "none"; }}
           >View Projects</a>
+          <button
+            onClick={() => setShowTableView(true)}
+            style={{
+              padding: "14px 32px", background: "transparent", color: colors.text,
+              borderRadius: "8px", fontSize: "14px",
+              fontFamily: "'DM Sans', sans-serif", fontWeight: 600, letterSpacing: "0.5px",
+              border: `1px solid ${colors.border}`, transition: "all 0.2s",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => { e.target.style.borderColor = "rgba(0,229,160,0.5)"; e.target.style.color = colors.accent; }}
+            onMouseLeave={(e) => { e.target.style.borderColor = colors.border; e.target.style.color = colors.text; }}
+          >View Projects in a Table</button>
           <a href="#contact" style={{
             padding: "14px 32px", background: "transparent", color: colors.text,
             borderRadius: "8px", textDecoration: "none", fontSize: "14px",
@@ -592,6 +604,249 @@ function ContactSection({ theme }) {
   );
 }
 
+function ProjectTableModal({ showTableView, setShowTableView, theme }) {
+  const colors = THEME_COLORS[theme];
+
+  if (!showTableView) return null;
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: "rgba(0, 0, 0, 0.8)",
+        backdropFilter: "blur(10px)",
+        zIndex: 1000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "20px",
+      }}
+      onClick={() => setShowTableView(false)}
+    >
+      <div
+        style={{
+          background: colors.bg,
+          borderRadius: "16px",
+          border: `1px solid ${colors.border}`,
+          maxWidth: "1200px",
+          width: "100%",
+          maxHeight: "90vh",
+          overflow: "auto",
+          padding: "32px",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px",
+        }}>
+          <h2 style={{
+            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontSize: "32px",
+            color: colors.text,
+            margin: 0,
+            letterSpacing: "-1px",
+          }}>Projects Overview</h2>
+          <button
+            onClick={() => setShowTableView(false)}
+            style={{
+              background: "transparent",
+              border: `1px solid ${colors.border}`,
+              borderRadius: "8px",
+              padding: "8px 16px",
+              cursor: "pointer",
+              fontSize: "14px",
+              color: colors.text,
+              fontFamily: "'DM Sans', sans-serif",
+              transition: "all 0.3s",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.borderColor = colors.accent;
+              e.target.style.color = colors.accent;
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.borderColor = colors.border;
+              e.target.style.color = colors.text;
+            }}
+          >
+            Close
+          </button>
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            fontFamily: "'DM Sans', sans-serif",
+          }}>
+            <thead>
+              <tr style={{
+                borderBottom: `2px solid ${colors.border}`,
+              }}>
+                <th style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  letterSpacing: "1.5px",
+                  textTransform: "uppercase",
+                  color: colors.accent,
+                  fontWeight: 600,
+                }}>Icon</th>
+                <th style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  letterSpacing: "1.5px",
+                  textTransform: "uppercase",
+                  color: colors.accent,
+                  fontWeight: 600,
+                }}>Project Name</th>
+                <th style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  letterSpacing: "1.5px",
+                  textTransform: "uppercase",
+                  color: colors.accent,
+                  fontWeight: 600,
+                }}>Subtitle</th>
+                <th style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  letterSpacing: "1.5px",
+                  textTransform: "uppercase",
+                  color: colors.accent,
+                  fontWeight: 600,
+                }}>Description</th>
+                <th style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  letterSpacing: "1.5px",
+                  textTransform: "uppercase",
+                  color: colors.accent,
+                  fontWeight: 600,
+                }}>Tags</th>
+                <th style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  letterSpacing: "1.5px",
+                  textTransform: "uppercase",
+                  color: colors.accent,
+                  fontWeight: 600,
+                }}>Metrics</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PROJECTS.map((project, index) => (
+                <tr
+                  key={project.id}
+                  style={{
+                    borderBottom: `1px solid ${colors.border}`,
+                    transition: "background 0.2s",
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = colors.cardBgHover}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                >
+                  <td style={{
+                    padding: "16px",
+                    fontSize: "24px",
+                  }}>
+                    <span style={{ color: project.color }}>{project.icon}</span>
+                  </td>
+                  <td style={{
+                    padding: "16px",
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: colors.text,
+                  }}>
+                    {project.title}
+                  </td>
+                  <td style={{
+                    padding: "16px",
+                    fontSize: "12px",
+                    color: project.color,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}>
+                    {project.subtitle}
+                  </td>
+                  <td style={{
+                    padding: "16px",
+                    fontSize: "13px",
+                    color: colors.textSecondary,
+                    lineHeight: 1.6,
+                    maxWidth: "350px",
+                  }}>
+                    {project.description}
+                  </td>
+                  <td style={{
+                    padding: "16px",
+                  }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {project.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          style={{
+                            padding: "4px 8px",
+                            borderRadius: "4px",
+                            fontSize: "10px",
+                            background: theme === "dark" ? "rgba(255,255,255,0.04)" : "rgba(8,8,12,0.04)",
+                            color: theme === "dark" ? "rgba(255,255,255,0.5)" : "rgba(8,8,12,0.5)",
+                            border: `1px solid ${colors.border}`,
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td style={{
+                    padding: "16px",
+                  }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                      {project.metrics.map((metric, i) => (
+                        <span
+                          key={i}
+                          style={{
+                            fontSize: "11px",
+                            color: colors.textMuted,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <span style={{
+                            width: "4px",
+                            height: "4px",
+                            borderRadius: "50%",
+                            background: project.color,
+                            opacity: 0.6,
+                          }} />
+                          {metric}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Footer({ theme }) {
   const colors = THEME_COLORS[theme];
   return (
@@ -611,6 +866,7 @@ function Footer({ theme }) {
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("home");
+  const [showTableView, setShowTableView] = useState(false);
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("portfolio-theme");
     return saved || "dark";
@@ -665,12 +921,13 @@ export default function Portfolio() {
         }
       `}</style>
       <Navbar activeSection={activeSection} theme={theme} toggleTheme={toggleTheme} />
-      <HeroSection theme={theme} />
+      <HeroSection theme={theme} setShowTableView={setShowTableView} />
       <ProjectsSection theme={theme} />
       <BlogSection theme={theme} />
       <SkillsSection theme={theme} />
       <ContactSection theme={theme} />
       <Footer theme={theme} />
+      <ProjectTableModal showTableView={showTableView} setShowTableView={setShowTableView} theme={theme} />
     </div>
   );
 }
